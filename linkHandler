@@ -1,5 +1,4 @@
 import openpyxl
-import requests
 
 # might need to change this depending on variable names
 workbook = openpyxl.load_workbook('Links.xlsx')
@@ -39,9 +38,12 @@ def populate_worksheet():
             enterNewLink = input("Do you want to enter a new link? (Y/N):")
 
 
+
 # might need to change this to a variable
 def save_worksheet(workbook):
     workbook.save('Links.xlsx')
+
+
 
 
 
@@ -56,6 +58,7 @@ def populateExcelLinksAA(worksheet, link):
                 index += 1
 
 
+
 def populateExcelLinksAAA(worksheet, link):
     index = 1
     for i in range(ord('A'), ord('Z')+1):
@@ -68,25 +71,5 @@ def populateExcelLinksAAA(worksheet, link):
                 index += 1
 
 
-def send_request():
-    url = "https://www.disclaimer.topstocktips.com/cr"
-    response = requests.get(url, verify=False)
 
-    if response.status_code == 200:
-        print("success")
-    else:
-        print("also a success but kinda")
-    #print(response.content)
-
-
-
-
-
-#populateExcelLinksAA(worksheet, link)
-#populateExcelLinksAAA(worksheet, link)
-
-#populate_worksheet()
-send_request()
- 
- 
 workbook.save('Links.xlsx')
