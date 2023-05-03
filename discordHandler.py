@@ -1,42 +1,59 @@
 import discord
 
+from discord.ext import commands
+
 
 intents = discord.Intents.all()
-client = discord.Client(intents=intents)
-guild = discord.Guild
+#client = discord.Client(intents=intents)
+#client.run('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
+
+#guild = discord.Guild
+
+changeChannelId = 1103118015526088804
+promoChannelId = 1103119812697268235
+link = ''
+
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 
-@client.event
+
+
+@bot.event
 async def on_ready():
-    query_v2(tickers)
     print('bot is ready!')
-    #default_channel = discord.utils.get(client.guilds[0].channel, name='mastersheetbot')
-    #await  default_channel.channel.send("Data synced to Mastersheet")
+    
+
+#@bot.event
+#async def on_message(message):
 
 
-@client.event
-async def on_message(message):
-    #default_channel = discord.utils.get(client.guilds[0].channel, name='mastersheetbot')
-
-    channel = client.get_channel(1074828421781274727)
-
-    if message.author == client.user:
-        return
-    else:
-        message_str = str(message.content)
-        current_tickers = get_tickers()
-        #print(f'message_str is: {message_str}')
-        possibleTickers = four_letters(message_str)
-        tickersToAdd = []
-        for possibleTicker in possibleTickers:
-            if possibleTicker not in current_tickers:
-                tickersToAdd.append(possibleTicker)
+    
 
 
-        #print(f'tickers to add: {tickersToAdd}')
-        if(len(tickersToAdd) != 0):
-            queryTicker(tickersToAdd)
-            await channel.send(f"Added data for {tickersToAdd}")
+@bot.command(name='changeLink')
+async def changeLink(context):
+    def check(m):
+        return m.channel == context.channel and m.author == context.author
 
 
-            client.run('MTA3NDgxNTAzOTEyODc1MjE3MA.G9jMeg.jpAj-JS_NCWZYEce4XsezF27bYCPSxF8s6h1Ic')
+    try:
+        global link
+        await context.send("Enter a new link you'd like to add. Instead of putting a two letter code, put a $ instead:")
+        link = await bot.wait_for('message', timeout=30.0, check=check)
+    except asyncio.TimeoutError:
+        # Save the link to a file
+        newLink = link.content
+        await context.send(f'Link has been updated to: {newLink}')
+
+
+@bot.command(name='viewLinks')
+async def viewCurrentLinks(context):
+    def check(m):
+        return m.channel == context.channel and m.author == context.author
+    
+
+
+
+
+
+bot.run('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
