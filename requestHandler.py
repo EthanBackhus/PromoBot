@@ -5,14 +5,20 @@ import os
 import certifi
 
 #os.environ['REQUESTS_CA_BUNDLE'] = 'cacert.pem'
+url1 = 'https://www.disclaimer.topstocktips.com/$'
+url2 = 'https://www.secretstockalerts.com/$'
 
-#print(certifi.where)
-#print(certifi.contents)
-def send_request():
+def requestHandler():
+    while True:
+        
+
+
+
+def sendRequest():
     url = "https://www.disclaimer.topstocktips.com/cr"
     secretUrl = "https://www.secretstockalerts.com/at"
-    url2 = 'https://stackoverflow.com/questions/33148312/how-to-fake-the-object-initiation-using-fakeiteasy'
-    response = requests.get(url, verify = './ca.pem')
+    response = requests.get(url)
+    resposne2 = requests.get(secretUrl)
     #response = requests.get(url, verify= 'c:\users\h510341\appdata\roaming\python\python310\site-packages')
 
     if response.status_code == 200:
@@ -25,4 +31,4 @@ def send_request():
 
 
 
-send_request()
+sendRequest()

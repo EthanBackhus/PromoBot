@@ -6,7 +6,7 @@ worksheet = workbook['Sheet1']
 link = "https://www.disclaimer.topstocktips.com/$"
 
 
-def populate_worksheet():
+async def populate_worksheet():
     stuckInLoop = True
     while(stuckInLoop):
         enterNewLink = input("Do you want to enter a new link? (Y/N):")
