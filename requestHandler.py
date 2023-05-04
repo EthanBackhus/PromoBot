@@ -8,26 +8,30 @@ import certifi
 url1 = 'https://www.disclaimer.topstocktips.com/$'
 url2 = 'https://www.secretstockalerts.com/$'
 
-def requestHandler():
-    while True:
-        
+listUrls = ['https://www.disclaimer.topstocktips.com/$','https://www.secretstockalerts.com/$']
+
 
 
 
 def sendRequest():
-    url = "https://www.disclaimer.topstocktips.com/cr"
-    secretUrl = "https://www.secretstockalerts.com/at"
-    response = requests.get(url)
-    resposne2 = requests.get(secretUrl)
-    #response = requests.get(url, verify= 'c:\users\h510341\appdata\roaming\python\python310\site-packages')
+    counter = 0
+    while True:
+        url = "https://www.disclaimer.topstocktips.com/cr"
+        secretUrl = "https://www.secretstockalerts.com/at"
+        response = requests.get(url)
+        time.sleep(0.01)
+        counter += 1
+    
+        #resposne2 = requests.get(secretUrl)
+        #response = requests.get(url, verify= 'c:\users\h510341\appdata\roaming\python\python310\site-packages')
 
-    if response.status_code == 200:
-        print("200")
-    elif response.status_code == 404:
-        print("404")
-    else:
-        print("Unsuccessful")
-    #print(response.content)
+        if response.status_code == 200:
+            print(f'200 Counter={counter}')
+        elif response.status_code == 404:
+            print("404")
+        else:
+            print("Unsuccessful")
+        #print(response.content)
 
 
 

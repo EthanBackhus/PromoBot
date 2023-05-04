@@ -1,6 +1,7 @@
 import discord
 import asyncio
-from linkHandler import populate_worksheet
+import openpyxl
+
 from discord.ext import commands
 
 
@@ -16,33 +17,44 @@ link = ''
 
 bot = commands.Bot(command_prefix='!',intents=intents)
 
+listExcelSheets = ['disclaimer.topstocktipsAA.xlsx','secretstockalerts.xlsx']
+
+async def workbookController():
+    stockTipsLink = openpyxl.load_workbook(listExcelSheets[0])
+    secretStockAlerts = openpyxl.load_workbook(listExcelSheets[1])
+
+    
+
+
+
 
 
 @bot.event
 async def on_ready():
+
     print('bot is ready!')
     
 
 
-@bot.event
-async def on_message(message):
-    #Ignore messages sent by bot itself
-    if message.author.bot:
-        return
-    
-    if message.content.startswith(bot.command_prefix):
-        # Convert the command to lowercase before processing it
-        command = message.content.split()[0].lower()
-        # Remove the command prefix to get the command name
-        command_name = command[len(bot.command_prefix):]
-        # Get the command object from the bot
-        command_obj = bot.commands.get(command_name)
-        # If the command exists, invoke it with the message context
-        if command_obj:
-            await bot.invoke(command_obj, message)
-
-    # Let the bot process other messages as usual
-    await bot.process_commands(message)
+#@bot.event
+#async def on_message(message):
+#    #Ignore messages sent by bot itself
+#    if message.author.bot:
+#        return
+#    
+#    if message.content.startswith(bot.command_prefix):
+#        # Convert the command to lowercase before processing it
+#        command = message.content.split()[0].lower()
+#        # Remove the command prefix to get the command name
+#        command_name = command[len(bot.command_prefix):]
+#        # Get the command object from the bot
+#        command_obj = bot.commands.get(command_name)
+#        # If the command exists, invoke it with the message context
+#        if command_obj:
+#            await bot.invoke(command_obj, message)
+#
+#    # Let the bot process other messages as usual
+#    await bot.process_commands(message)
 
     
 
@@ -86,4 +98,11 @@ async def on_command_error(context, error):
 
 
 
-bot.run('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
+
+async def main():
+    await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
+    await workbookController()
+
+
+
+asyncio.run(main())

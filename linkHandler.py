@@ -1,9 +1,9 @@
 import openpyxl
 
-# might need to change this depending on variable names
-workbook = openpyxl.load_workbook('LinksAA.xlsx')
+workbookName = 'LinksAA.xlsx'
+workbook = openpyxl.load_workbook(workbookName)
 worksheet = workbook['Sheet1']
-link = "https://www.disclaimer.topstocktips.com/$"
+link = "https://www.secretstockalerts.com/$"
 
 
 async def populate_worksheet():
@@ -39,9 +39,9 @@ async def populate_worksheet():
 
 
 
-# might need to change this to a variable
-def save_worksheet(workbook):
-    workbook.save('Links.xlsx')
+## might need to change this to a variable
+#def save_worksheet(workbook):
+#    workbook.save('Links.xlsx')
 
 
 
@@ -76,4 +76,4 @@ populateExcelLinksAA(worksheet, link)
 #populateExcelLinksAAA(worksheet, link)
 
 #populate_worksheet()
-workbook.save('LinksAA.xlsx')
+workbook.save(workbookName)
