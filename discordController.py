@@ -1,6 +1,8 @@
 import discord
 import asyncio
 import openpyxl
+import requests
+import time
 
 from discord.ext import commands
 
@@ -19,9 +21,13 @@ bot = commands.Bot(command_prefix='!',intents=intents)
 
 listExcelSheets = ['disclaimer.topstocktipsAA.xlsx','secretstockalerts.xlsx']
 
-async def workbookController():
+async def excelController():
     stockTipsLink = openpyxl.load_workbook(listExcelSheets[0])
     secretStockAlerts = openpyxl.load_workbook(listExcelSheets[1])
+    counter = 0
+    while True:
+        responseStockTips = requests.get(stockTipsLink)
+        responseSecretStockAlerts = requests.get(secretStockAlerts)
 
     
 
@@ -101,7 +107,7 @@ async def on_command_error(context, error):
 
 async def main():
     await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
-    await workbookController()
+    await excelController()
 
 
 
