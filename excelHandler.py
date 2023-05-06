@@ -48,7 +48,7 @@ async def populate_worksheet():
 
 
 def populateExcelLinksAA(worksheet, link):
-    index = 1
+    index = 2
     for i in range(ord('A'), ord('Z')+1):
         for j in range(ord('A'), ord('Z')+1):
                 sequence = (chr(i) + chr(j))
@@ -60,7 +60,7 @@ def populateExcelLinksAA(worksheet, link):
 
 
 def populateExcelLinksAAA(worksheet, link):
-    index = 1
+    index = 2
     for i in range(ord('A'), ord('Z')+1):
         for j in range(ord('A'), ord('Z')+1):
             for k in range(ord('A'), ord('Z')+1):

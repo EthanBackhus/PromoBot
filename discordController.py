@@ -1,8 +1,11 @@
 import discord
 import asyncio
 import openpyxl
-
+import time
+import requests
 from discord.ext import commands
+import pandas as pd
+from requestHandler import requestHandler
 
 
 intents = discord.Intents.all()
@@ -12,6 +15,7 @@ intents = discord.Intents.all()
 #guild = discord.Guild
 
 changeChannelId = 1103118015526088804
+promoAlertChannelId = 1104544342976233482
 promoChannelId = 1103119812697268235
 link = ''
 
@@ -20,10 +24,23 @@ bot = commands.Bot(command_prefix='!',intents=intents)
 listExcelSheets = ['disclaimer.topstocktipsAA.xlsx','secretstockalerts.xlsx']
 
 async def workbookController():
-    stockTipsLink = openpyxl.load_workbook(listExcelSheets[0])
-    secretStockAlerts = openpyxl.load_workbook(listExcelSheets[1])
-
+    dfStockTips = pd.read_excel(listExcelSheets[0], sheet_name='Sheet1')
+    dfSecretStockAlerts = pd.read_excel(listExcelSheets[1], sheet_name='Sheet1')
+    linkStockTips = dfStockTips.iloc[0,0]
+    linkStockAlerts = dfSecretStockAlerts.iloc[0,0]
     
+    interrupt = False
+    while(interrupt == False):
+        responseStockTips = requests.get(linkStockTips)
+        resopnseSecretStockAlerts = requests.get(linkStockAlerts)
+        time.sleep(0.05)
+
+        #if(responseStockTips.status_code == 200):
+            
+
+        
+
+
 
 
 
@@ -86,6 +103,14 @@ async def viewCurrentLinks(context):
     
 
 
+
+async def sendPromoAlert():
+    promoChannel = bot.get_channel(1104544342976233482)
+    await channel.send("")
+
+    
+
+
 # Convert all commands to lowercase before processing them
 bot.case_insensitive = True
 
@@ -105,4 +130,6 @@ async def main():
 
 
 
-asyncio.run(main())
+#asyncio.run(main())
+
+asyncio.run(workbookController())
