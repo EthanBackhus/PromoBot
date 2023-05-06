@@ -1,2 +1,2 @@
-disclaimer.topstocktips.xlsx
-secretstockalerts.xlsx
+https://www.disclaimer.topstocktips.com/$
+https://www.secretstockalerts.com/$

@@ -1,8 +1,7 @@
 import discord
 import asyncio
 import openpyxl
-import time
-import requests
+
 from discord.ext import commands
 import pandas as pd
 from requestHandler import requestHandler
@@ -126,7 +125,7 @@ async def on_command_error(context, error):
 
 async def main():
     await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
-    await workbookController()
+    await excelController()
 
 
 
