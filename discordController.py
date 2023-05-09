@@ -1,10 +1,11 @@
 import discord
 import asyncio
 import openpyxl
-
+import requests
+import time
 from discord.ext import commands
 import pandas as pd
-from requestHandler import requestHandler
+#from requestHandler import requestHandler
 
 
 intents = discord.Intents.all()
@@ -22,33 +23,49 @@ bot = commands.Bot(command_prefix='!',intents=intents)
 
 listExcelSheets = ['disclaimer.topstocktipsAA.xlsx','secretstockalerts.xlsx']
 
-async def workbookController():
+async def excelController():
     dfStockTips = pd.read_excel(listExcelSheets[0], sheet_name='Sheet1')
     dfSecretStockAlerts = pd.read_excel(listExcelSheets[1], sheet_name='Sheet1')
-    linkStockTips = dfStockTips.iloc[0,0]
-    linkStockAlerts = dfSecretStockAlerts.iloc[0,0]
+    index = 0
     
     interrupt = False
     while(interrupt == False):
+        if(index == 676):
+            index = 0
+
+        linkStockTips = dfStockTips.iloc[index,0]
+        linkSecertAlerts = dfSecretStockAlerts.iloc[index,0]
+
+        temp = index
+        duplicate = False
+
+        # check to see if link has already been hit
+        if(stringInFile(linkStockTips, 'listKnownHits.txt')):
+            temp +=1
+
         responseStockTips = requests.get(linkStockTips)
-        resopnseSecretStockAlerts = requests.get(linkStockAlerts)
+        responseSecretStockAlerts = requests.get(linkSecertAlerts)
         time.sleep(0.05)
 
-        #if(responseStockTips.status_code == 200):
-            
+        if(responseStockTips.status_code == 200 or responseSecretStockAlerts.status_code == 200):
+            sendPromoAlert()
+            if(responseStockTips.status_code == 200):
+                writeToFile(linkStockTips, 'listKnownHits.txt')
+                print(f"We got a hit on {linkStockTips}")
+            elif(responseSecretStockAlerts.status_code == 200):
+                print(f"We got a hit on {linkSecertAlerts}")
+            interrupt = True
+        else:
+            index+=1
+            print(f"Miss on {linkStockTips}, index = {index}")
 
         
-
-
-
-
-
-
 
 @bot.event
 async def on_ready():
 
     print('bot is ready!')
+    await excelController()
     
 
 
@@ -86,6 +103,7 @@ async def changeLink(context):
         await context.send("Enter a new link you'd like to add. Put a $ instead of the two letter code. E.x. https://www.disclaimer.topstocktips.com/$")
         link = await bot.wait_for('message', timeout=30.0, check=check)
         newLink= link.content
+        writeToFile(newLink, 'linkList.txt')
         await context.send(f'Link has been updated to: {newLink}')
     except asyncio.TimeoutError:
         context.send('Timeout has occured. Try again')
@@ -105,9 +123,26 @@ async def viewCurrentLinks(context):
 
 async def sendPromoAlert():
     promoChannel = bot.get_channel(1104544342976233482)
-    await channel.send("")
+    await promoChannel.send("ALERT!")
 
     
+
+async def writeToFile(text, filename):
+    with open(filename, 'a+') as file:
+        file.seek(0)
+        content = file.read()
+        if text not in content:
+            file.write('\n' + text)
+
+
+async def stringInFile(text, filename):
+    with open(filename, 'r') as file:
+        content = file.read()
+        if text in content:
+            return True
+        else:
+            return False
+
 
 
 # Convert all commands to lowercase before processing them
@@ -125,10 +160,9 @@ async def on_command_error(context, error):
 
 async def main():
     await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
-    await excelController()
 
 
 
-#asyncio.run(main())
+asyncio.run(main())
 
-asyncio.run(workbookController())
+#asyncio.run(writeToFile('https://www.secretstockalerts.com/AA', 'listKnownHits.txt'))

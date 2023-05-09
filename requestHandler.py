@@ -35,4 +35,13 @@ def sendRequest():
 
 
 
-sendRequest()
+
+async def requestHandler(request):
+    if(request.status_code == 200):
+        
+    
+
+
+
+
+#sendRequest()
