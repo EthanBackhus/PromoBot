@@ -1,9 +1,10 @@
 import openpyxl
 
-workbookName = 'LinksAA.xlsx'
+workbookName = 'disclaimer.topstocktipsAA.xlsx'
 workbook = openpyxl.load_workbook(workbookName)
 worksheet = workbook['Sheet1']
 link = "https://www.secretstockalerts.com/$"
+link2 = 'https://www.disclaimer.topstocktips.com/$'
 
 
 async def populate_worksheet():
@@ -52,7 +53,8 @@ def populateExcelLinksAA(worksheet, link):
     for i in range(ord('A'), ord('Z')+1):
         for j in range(ord('A'), ord('Z')+1):
                 sequence = (chr(i) + chr(j))
-                new_link = link.replace('$', sequence)
+                sequenceLower = sequence.lower()
+                new_link = link.replace('$', sequenceLower)
                 worksheetIndex = 'A' + str(index)
                 worksheet[worksheetIndex] = new_link
                 index += 1
@@ -65,7 +67,8 @@ def populateExcelLinksAAA(worksheet, link):
         for j in range(ord('A'), ord('Z')+1):
             for k in range(ord('A'), ord('Z')+1):
                 sequence = (chr(i) + chr(j) + chr(k))
-                new_link = link.replace('$', sequence)
+                sequenceLower = sequence.lower()
+                new_link = link.replace('$', sequenceLower)
                 worksheetIndex = 'A' + str(index)
                 worksheet[worksheetIndex] = new_link
                 index += 1
