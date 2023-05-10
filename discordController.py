@@ -5,6 +5,7 @@ import requests
 import time
 from discord.ext import commands
 import pandas as pd
+import datetime
 #from requestHandler import requestHandler
 
 
@@ -17,6 +18,8 @@ intents = discord.Intents.all()
 changeChannelId = 1103118015526088804
 promoAlertChannelId = 1104544342976233482
 promoChannelId = 1103119812697268235
+startTime = datetime.time(hour=7, minute=0)
+endTime = datetime.time(hour=16, minute=0)
 link = ''
 
 bot = commands.Bot(command_prefix='!',intents=intents)
@@ -29,35 +32,49 @@ async def excelController():
     index = 0
     
     interrupt = False
-    while(interrupt == False):
-        if(index == 676):
-            index = 0
 
-        linkStockTips = dfStockTips.iloc[index,0]
-        linkSecertAlerts = dfSecretStockAlerts.iloc[index,0]
+    #check to see if the time is right to run
+    currentTime = datetime.datetime.now().time()
+    if currentTime >= startTime and currentTime <= endTime:
+        #run the loop
+        ########################################################################################
+        while(interrupt == False):
 
-        temp = index
-        duplicate = False
+            if(index == 676):
+                index = 0
 
-        # check to see if link has already been hit
-        if(stringInFile(linkStockTips, 'listKnownHits.txt')):
-            temp +=1
+            linkStockTips = dfStockTips.iloc[index,0]
+            linkSecertAlerts = dfSecretStockAlerts.iloc[index,0]
 
-        responseStockTips = requests.get(linkStockTips)
-        responseSecretStockAlerts = requests.get(linkSecertAlerts)
-        time.sleep(0.05)
+            responseStockTips = requests.get(linkStockTips)
+            responseSecretStockAlerts = requests.get(linkSecertAlerts)
+            time.sleep(0.05)
 
-        if(responseStockTips.status_code == 200 or responseSecretStockAlerts.status_code == 200):
-            sendPromoAlert()
-            if(responseStockTips.status_code == 200):
-                writeToFile(linkStockTips, 'listKnownHits.txt')
-                print(f"We got a hit on {linkStockTips}")
-            elif(responseSecretStockAlerts.status_code == 200):
-                print(f"We got a hit on {linkSecertAlerts}")
-            interrupt = True
-        else:
-            index+=1
-            print(f"Miss on {linkStockTips}, index = {index}")
+            if(responseStockTips.status_code == 200 or responseSecretStockAlerts.status_code == 200):
+                sendPromoAlert()
+                if(responseStockTips.status_code == 200):
+                    if(stringInFile(linkStockTips, 'listKnownHits.txt') == False):
+                        writeToFile(linkStockTips, 'listKnownHits.txt')
+                        print(f"We got a hit on {linkStockTips}")
+                        sendPromoAlert(linkStockTips)
+                        interrupt = True
+                elif(responseSecretStockAlerts.status_code == 200):
+                    if(stringInFile(linkSecertAlerts, 'listKnownHits.txt') == False):
+                        writeToFile(linkSecertAlerts, 'listKnownHits.txt')
+                        print(f"We got a hit on {linkSecertAlerts}")
+                        sendPromoAlert(linkSecertAlerts)
+                        interrupt = True
+            else:
+                index+=1
+                print(f"Miss on {linkStockTips}, {linkSecertAlerts}, index = {index}")
+            ########################################################################################
+    else:
+        # wait until tomorrow
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days = 1)
+        tomorrowStartTime = datetime.datetime.combine(tomorrow.date(), startTime)
+        time.sleep((tomorrowStartTime - datetime.datetime.now()).seconds)
+
+    
 
         
 
@@ -121,9 +138,9 @@ async def viewCurrentLinks(context):
 
 
 
-async def sendPromoAlert():
+async def sendPromoAlert(text):
     promoChannel = bot.get_channel(1104544342976233482)
-    await promoChannel.send("ALERT!")
+    await promoChannel.send(f"ALERT! I have just detected a new promo from {text}")
 
     
 
