@@ -18,8 +18,8 @@ intents = discord.Intents.all()
 changeChannelId = 1103118015526088804
 promoAlertChannelId = 1104544342976233482
 promoChannelId = 1103119812697268235
-startTime = datetime.time(hour=7, minute=0)
-endTime = datetime.time(hour=16, minute=0)
+startTime = datetime.time(hour=5, minute=45)
+endTime = datetime.time(hour=22, minute=0)
 link = ''
 
 bot = commands.Bot(command_prefix='!',intents=intents)
@@ -140,7 +140,7 @@ async def viewCurrentLinks(context):
 
 async def sendPromoAlert(text):
     promoChannel = bot.get_channel(1104544342976233482)
-    await promoChannel.send(f"ALERT! I have just detected a new promo from {text}")
+    await promoChannel.send(f"ALERT! New Promo: {text}")
 
     
 
@@ -176,7 +176,13 @@ async def on_command_error(context, error):
 
 
 async def main():
-    await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
+    #create two tasks
+    task1 = asyncio.create_task(bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4'))
+    #await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
+    task2 = asyncio.create_task(excelController())
+
+    #wait for both tasks to complete
+    await asyncio.gather(task1, task2)
 
 
 
