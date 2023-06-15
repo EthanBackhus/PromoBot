@@ -6,6 +6,7 @@ import time
 from discord.ext import commands
 import pandas as pd
 import datetime
+import threading
 #from requestHandler import requestHandler
 
 
@@ -14,19 +15,23 @@ intents = discord.Intents.all()
 #client.run('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
 
 #guild = discord.Guild
-
+botCode = 'MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4'
 changeChannelId = 1103118015526088804
 promoAlertChannelId = 1104544342976233482
 promoChannelId = 1103119812697268235
+
 startTime = datetime.time(hour=5, minute=45)
 endTime = datetime.time(hour=22, minute=0)
 link = ''
 
 bot = commands.Bot(command_prefix='!',intents=intents)
 
+
 listExcelSheets = ['disclaimer.topstocktipsAA.xlsx','secretstockalerts.xlsx']
 
 async def excelController():
+    print("Testing!")
+
     dfStockTips = pd.read_excel(listExcelSheets[0], sheet_name='Sheet1')
     dfSecretStockAlerts = pd.read_excel(listExcelSheets[1], sheet_name='Sheet1')
     index = 0
@@ -46,23 +51,40 @@ async def excelController():
             linkStockTips = dfStockTips.iloc[index,0]
             linkSecertAlerts = dfSecretStockAlerts.iloc[index,0]
 
-            responseStockTips = requests.get(linkStockTips)
-            responseSecretStockAlerts = requests.get(linkSecertAlerts)
-            time.sleep(0.05)
+            ## TEMP ####################################
+            #responseStockTips = requests.get(linkStockTips)
+            #responseSecretStockAlerts = requests.get(linkSecertAlerts)
+            responseStockTips = 404
+            responseSecretStockAlerts = 404
 
-            if(responseStockTips.status_code == 200 or responseSecretStockAlerts.status_code == 200):
-                sendPromoAlert()
-                if(responseStockTips.status_code == 200):
+            if(linkStockTips == 'https://www.disclaimer.topstocktips.com/jf'):
+                responseStockTips = 200
+            else:
+                responseStockTips = 404
+
+            
+            ## TEMP ####################################
+            
+
+            #time.sleep(0.05)
+            await asyncio.sleep(0.05)
+
+            if(responseStockTips == 200 or responseSecretStockAlerts == 200):
+                #sendPromoAlert()
+                if(responseStockTips == 200):
                     if(stringInFile(linkStockTips, 'listKnownHits.txt') == False):
                         writeToFile(linkStockTips, 'listKnownHits.txt')
                         print(f"We got a hit on {linkStockTips}")
-                        sendPromoAlert(linkStockTips)
+
+                        process = await asyncio.create_subprocess_exec()
+
+                        await sendPromoAlert("test!!!")
                         interrupt = True
-                elif(responseSecretStockAlerts.status_code == 200):
+                elif(responseSecretStockAlerts == 200):
                     if(stringInFile(linkSecertAlerts, 'listKnownHits.txt') == False):
                         writeToFile(linkSecertAlerts, 'listKnownHits.txt')
                         print(f"We got a hit on {linkSecertAlerts}")
-                        sendPromoAlert(linkSecertAlerts)
+                        await sendPromoAlert("test!!!!")
                         interrupt = True
             else:
                 index+=1
@@ -80,9 +102,7 @@ async def excelController():
 
 @bot.event
 async def on_ready():
-
     print('bot is ready!')
-    await excelController()
     
 
 
@@ -144,7 +164,7 @@ async def sendPromoAlert(text):
 
     
 
-async def writeToFile(text, filename):
+def writeToFile(text, filename):
     with open(filename, 'a+') as file:
         file.seek(0)
         content = file.read()
@@ -152,7 +172,7 @@ async def writeToFile(text, filename):
             file.write('\n' + text)
 
 
-async def stringInFile(text, filename):
+def stringInFile(text, filename):
     with open(filename, 'r') as file:
         content = file.read()
         if text in content:
@@ -174,18 +194,24 @@ async def on_command_error(context, error):
 
 
 
+async def botController():
+    await bot.start(botCode)
+
+
+
+async def excelRunner():
+    await excelController()
+
+
 
 async def main():
-    #create two tasks
-    task1 = asyncio.create_task(bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4'))
-    #await bot.start('MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4')
-    task2 = asyncio.create_task(excelController())
-
-    #wait for both tasks to complete
-    await asyncio.gather(task1, task2)
+    #discordTask = asyncio.create_task(botController())
+    #excelTask = asyncio.create_task(excelRunner())
+    #await asyncio.gather(discordTask, excelTask)
+    await asyncio.gather(botController(), excelRunner())
 
 
 
-asyncio.run(main())
 
-#asyncio.run(writeToFile('https://www.secretstockalerts.com/AA', 'listKnownHits.txt'))
+if __name__ == '__main__':
+    asyncio.run(main())

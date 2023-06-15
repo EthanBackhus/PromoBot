@@ -49,6 +49,7 @@ async def populate_worksheet():
 
 
 def populateExcelLinksAA(worksheet, link):
+    link = 'https://www.disclaimer.topstocktips.com/$'
     index = 2
     for i in range(ord('A'), ord('Z')+1):
         for j in range(ord('A'), ord('Z')+1):
@@ -75,7 +76,8 @@ def populateExcelLinksAAA(worksheet, link):
 
 
 
-populateExcelLinksAA(worksheet, link)
+print(f"workbook is: {workbook} ,worksheet is: {worksheet}, link is: {link2}")
+populateExcelLinksAA(worksheet, link2)
 #populateExcelLinksAAA(worksheet, link)
 
 #populate_worksheet()
