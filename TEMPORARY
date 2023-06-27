@@ -1,0 +1,58 @@
+def perform_search_query():
+    dfStockTips = pd.read_excel(listExcelSheets[0], sheet_name='Sheet1')
+    dfSecretStockAlerts = pd.read_excel(listExcelSheets[1], sheet_name='Sheet1')
+    index = 0
+
+    interrupt = False
+
+    #check to see if the time is right to run
+    currentTime = datetime.datetime.now().time()
+
+    if currentTime >= startTime and currentTime <= endTime:
+        #run the loop
+        ########################################################################################
+        while(interrupt == False):
+            if(index == 676):
+                index = 0
+            linkStockTips = dfStockTips.iloc[index,0]
+            linkSecertAlerts = dfSecretStockAlerts.iloc[index,0]
+
+            ## TEMP ####################################
+            #responseStockTips = requests.get(linkStockTips)
+            #responseSecretStockAlerts = requests.get(linkSecertAlerts)
+            responseStockTips = 404
+            responseSecretStockAlerts = 404
+            if(linkStockTips == 'https://www.disclaimer.topstocktips.com/jf'):
+                responseStockTips = 200
+            else:
+                responseStockTips = 404
+            ## TEMP ####################################
+            
+            time.sleep(0.05)
+            if(responseStockTips == 200 or responseSecretStockAlerts == 200):
+                #sendPromoAlert()
+                if(responseStockTips == 200):
+                    if(stringInFile(linkStockTips, 'listKnownHits.txt') == False):
+                        writeToFile(linkStockTips, 'listKnownHits.txt')
+                        print(f"We got a hit on {linkStockTips}")
+                        
+                        return 200
+
+                        interrupt = True
+                elif(responseSecretStockAlerts == 200):
+                    if(stringInFile(linkSecertAlerts, 'listKnownHits.txt') == False):
+                        writeToFile(linkSecertAlerts, 'listKnownHits.txt')
+                        print(f"We got a hit on {linkSecertAlerts}")
+                        
+                        return 200
+
+                        interrupt = True
+            else:
+                index+=1
+                print(f"Miss on {linkStockTips}, {linkSecertAlerts}, index = {index}")
+        ########################################################################################
+    else:
+        # wait until tomorrow
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days = 1)
+        tomorrowStartTime = datetime.datetime.combine(tomorrow.date(), startTime)
+        time.sleep((tomorrowStartTime - datetime.datetime.now()).seconds)
