@@ -48,12 +48,6 @@ def perform_search_query():
 
         index += 1
 
-
-
-    #print("sleeping...")
-    #time.sleep(15)
-    #print("awake!!!")
-    #return 200, 'VVPR', 'https://disclaimer.topstocktips.com/vv'
     
     
 

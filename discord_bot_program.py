@@ -1,13 +1,8 @@
 import discord
 import asyncio
-import openpyxl
-import requests
-import time
 from discord.ext import commands
 import pandas as pd
 import datetime
-import threading
-#from requestHandler import requestHandler
 
 queue = None
 intents = discord.Intents.all()
