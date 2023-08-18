@@ -1,8 +1,13 @@
 import discord
 import asyncio
+import openpyxl
+import requests
+import time
 from discord.ext import commands
 import pandas as pd
 import datetime
+import threading
+#from requestHandler import requestHandler
 
 queue = None
 intents = discord.Intents.all()
@@ -12,8 +17,10 @@ intents = discord.Intents.all()
 #guild = discord.Guild
 botCode = 'MTEwMzExMjE0OTg1OTA0MTMyMw.GdebuH.QyDdrHDUR8aTg1Ll-OvPd7l5Gv-_uF4vNrYnq4'
 changeChannelId = 1103118015526088804
-promoAlertChannelId = 1104544342976233482
+#promoAlertChannelId = 1104544342976233482
 promoChannelId = 1103119812697268235
+promoAlertChannelId = 1140813460993736704
+
 
 startTime = datetime.time(hour=5, minute=45)
 endTime = datetime.time(hour=22, minute=0)
